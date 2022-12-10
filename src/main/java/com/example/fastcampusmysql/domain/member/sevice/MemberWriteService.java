@@ -13,7 +13,7 @@ public class MemberWriteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Member create(RegisterMemberCommand command) {
+    public Member register(RegisterMemberCommand command) {
         var member = Member.builder()
                 .email(command.email())
                 .nickname(command.nickname())
