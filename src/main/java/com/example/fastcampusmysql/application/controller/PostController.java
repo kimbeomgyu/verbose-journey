@@ -27,7 +27,7 @@ public class PostController {
         return postWriteService.create(command);
     }
 
-    @GetMapping("")
+    @GetMapping("daily-post-count")
     public List<DailyPostCount> getDailyPostCounts(DailyPostCountRequest request) {
         return postReadService.getDailyPostCount(request);
     }
