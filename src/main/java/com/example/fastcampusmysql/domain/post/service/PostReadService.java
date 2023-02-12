@@ -3,7 +3,7 @@ package com.example.fastcampusmysql.domain.post.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.fastcampusmysql.domain.post.dto.DailyPostCount;
@@ -22,7 +22,7 @@ public class PostReadService {
         return postRepository.groupByCreatedDate(request);
     }
 
-    public Page<Post> getPosts(Long memberId, PageRequest pageRequest) {
-        return postRepository.findAllByMemberId(memberId, pageRequest);
+    public Page<Post> getPosts(Long memberId, Pageable pageable) {
+        return postRepository.findAllByMemberId(memberId, pageable);
     }
 }
