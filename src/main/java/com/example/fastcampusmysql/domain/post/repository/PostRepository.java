@@ -70,7 +70,7 @@ public class PostRepository {
                 ORDER BY %s
                 LIMIT :size
                 OFFSET :offset
-                    """, TABLE, PageHelper.orderBy(pageable.getSort()));
+                """, TABLE, PageHelper.orderBy(pageable.getSort()));
 
         var posts = namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
         return new PageImpl<Post>(posts, pageable, getCount(memberId));
@@ -87,6 +87,35 @@ public class PostRepository {
         return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
     }
 
+    public List<Post> findAllByMemberIdAndOrderByIdDesc(Long memberId, int size) {
+        var sql = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId = :memberId
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+        var params = new MapSqlParameterSource()
+                .addValue("memberId", memberId)
+                .addValue("size", size);
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
+    public List<Post> findAllByLessThanIdAndOrderByIdDesc(Long id, Long memberId, int size) {
+        var sql = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId = :memberId AND id < :id
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+        var params = new MapSqlParameterSource()
+                .addValue("memberId", memberId)
+                .addValue("id", id)
+                .addValue("size", size);
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
     public Post save(Post post) {
         if (post.getId() == null) {
             return insert(post);
@@ -96,8 +125,8 @@ public class PostRepository {
 
     public void bulkInsert(List<Post> posts) {
         var sql = String.format("""
-                    INSERT INTO `%s` (memberId, contents, createdDate, createdAt)
-                    VALUES (:memberId, :contents, :createdDate, :createdAt)
+                INSERT INTO `%s` (memberId, contents, createdDate, createdAt)
+                VALUES (:memberId, :contents, :createdDate, :createdAt)
                 """, TABLE);
 
         SqlParameterSource[] params = posts
